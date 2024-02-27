@@ -40,7 +40,7 @@ object RinhaServer extends KyoApp {
           defer {
             // validations
             await {
-              if account < 1 || account > 5 then notFound
+              if account < 0 || account > 5 then notFound
               else if descricao.isEmpty || descricao.exists(d =>
                   d.size > 10 || d.isEmpty()
                 )
@@ -81,7 +81,7 @@ object RinhaServer extends KyoApp {
             defer {
               // validations
               await {
-                if account < 1 || account > 5 then notFound
+                if account < 0 || account > 5 then notFound
                 else ()
               }
 

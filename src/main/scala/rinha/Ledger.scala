@@ -37,7 +37,12 @@ object Ledger:
 
   private val limits =
     List(
-      100000, 80000, 1000000, 10000000, 500000
+      Integer.MAX_VALUE, // warmup account
+      100000,
+      80000,
+      1000000,
+      10000000,
+      500000
     ).toArray
 
   enum Result {
@@ -87,8 +92,8 @@ object Ledger:
         arr
 
       def transaction(account: Int, amount: Int, desc: Array[Char]) =
-        val limit = limits(account - 1)
-        val offset = address + ((account - 1) * entrySize)
+        val limit = limits(account)
+        val offset = address + (account * entrySize)
         val timestamp = System.currentTimeMillis()
         var newBalance = 0
         while (!unsafe.compareAndSwapInt(null, offset, 0, 1)) {} // busy wait
@@ -117,8 +122,8 @@ object Ledger:
         Result.Processed(newBalance, limit)
 
       def statement(account: Int) =
-        val limit = limits(account - 1)
-        val offset = address + ((account - 1) * entrySize)
+        val limit = limits(account)
+        val offset = address + (account * entrySize)
         var balance = 0
         val transactions: Array[Transaction] = new Array[Transaction](10)
         while (!unsafe.compareAndSwapInt(null, offset, 0, 1)) {} // busy wait
