@@ -20,100 +20,105 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
-object RinhaServer extends KyoApp {
-
+object RinhaServer extends App {
   val notFound = Aborts(StatusCode.NotFound)
   val unprocessableEntity = Aborts(StatusCode.UnprocessableEntity)
   val ledger = Ledger.offheap()
 
-  run {
-    Routes.run(NettyKyoServer().host("0.0.0.0").port(8080)) {
-      Routes
-        .add(
-          _.post
-            .in("clientes" / path[Int]("id") / "transacoes")
-            .errorOut(statusCode)
-            .in(jsonBody[TransacaoRequest])
-            .out(jsonBody[TransacaoResponse])
-        ) { (account, request) =>
-          import request._
-          defer {
-            // validations
-            await {
-              if account < 0 || account > 5 then notFound
-              else if descricao.isEmpty || descricao.exists(d =>
-                  d.size > 10 || d.isEmpty()
-                )
-              then unprocessableEntity
-              else if tipo != "c" && tipo != "d" then unprocessableEntity
-              else ()
-            }
-
-            // perform transaction
-            val result = await {
-              IOs {
-                val amount = if (tipo == "c") valor else -valor
-                val desc = new Array[Char](10)
-                val d = descricao.get
-                for (i <- 0 until d.size) {
-                  desc(i) = d.charAt(i)
-                }
-                ledger.transaction(account, amount, desc)
-              }
-            }
-
-            // return result
-            result match {
-              case Result.Denied =>
-                await(unprocessableEntity)
-              case Result.Processed(balance, limit) =>
-                TransacaoResponse(limit, balance)
-            }
-          }
-        }
-        .andThen {
-          Routes.add(
-            _.get
-              .in("clientes" / path[Int]("id") / "extrato")
+  IOs.run {
+    Fibers.run {
+      Routes.run(
+        NettyKyoServer(NettyKyoServerOptions.default().forkExecution(false))
+          .host("0.0.0.0")
+          .port(8080)
+      ) {
+        Routes
+          .add(
+            _.post
+              .in("clientes" / path[Int]("id") / "transacoes")
               .errorOut(statusCode)
-              .out(jsonBody[ExtratoResponse])
-          ) { account =>
+              .in(jsonBody[TransacaoRequest])
+              .out(jsonBody[TransacaoResponse])
+          ) { (account, request) =>
+            import request._
             defer {
               // validations
               await {
                 if account < 0 || account > 5 then notFound
+                else if descricao.isEmpty || descricao.exists(d =>
+                    d.size > 10 || d.isEmpty()
+                  )
+                then unprocessableEntity
+                else if tipo != "c" && tipo != "d" then unprocessableEntity
                 else ()
               }
 
-              // get statement
+              // perform transaction
               val result = await {
-                IOs(ledger.statement(account))
+                IOs {
+                  val amount = if (tipo == "c") valor else -valor
+                  val desc = new Array[Char](10)
+                  val d = descricao.get
+                  for (i <- 0 until d.size) {
+                    desc(i) = d.charAt(i)
+                  }
+                  ledger.transaction(account, amount, desc)
+                }
               }
 
-              // generate response
-              val transactions =
-                result.transactions.toList
-                  .filter(_ != null)
-                  .reverse
-                  .map { t =>
-                    Transacao(
-                      t.amount.abs,
-                      if (t.amount < 0) "d" else "c",
-                      t.desc.takeWhile(_ != 0).mkString,
-                      formatTimestamp(t.timestamp)
-                    )
-                  }
-              ExtratoResponse(
-                Saldo(
-                  result.balance,
-                  formatTimestamp(System.currentTimeMillis()),
-                  result.limit
-                ),
-                transactions
-              )
+              // return result
+              result match {
+                case Result.Denied =>
+                  await(unprocessableEntity)
+                case Result.Processed(balance, limit) =>
+                  TransacaoResponse(limit, balance)
+              }
             }
           }
-        }
+          .andThen {
+            Routes.add(
+              _.get
+                .in("clientes" / path[Int]("id") / "extrato")
+                .errorOut(statusCode)
+                .out(jsonBody[ExtratoResponse])
+            ) { account =>
+              defer {
+                // validations
+                await {
+                  if account < 0 || account > 5 then notFound
+                  else ()
+                }
+
+                // get statement
+                val result = await {
+                  IOs(ledger.statement(account))
+                }
+
+                // generate response
+                val transactions =
+                  result.transactions.toList
+                    .filter(_ != null)
+                    .reverse
+                    .map { t =>
+                      Transacao(
+                        t.amount.abs,
+                        if (t.amount < 0) "d" else "c",
+                        t.desc.takeWhile(_ != 0).mkString,
+                        formatTimestamp(t.timestamp)
+                      )
+                    }
+                ExtratoResponse(
+                  Saldo(
+                    result.balance,
+                    formatTimestamp(System.currentTimeMillis()),
+                    result.limit
+                  ),
+                  transactions
+                )
+              }
+            }
+          }
+      }
     }
   }
 

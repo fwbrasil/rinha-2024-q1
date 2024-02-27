@@ -8,14 +8,14 @@ services:
       - MONGO_URI=db
     ports:
       - "8081:8080"
-    # depends_on:
-    #   - db
+    depends_on:
+      - db
     volumes:
       - data:/app/data
     deploy:
       resources:
         limits:
-          cpus: "0.6"
+          cpus: "0.5"
           memory: "200MB"
 
   api02:
@@ -38,7 +38,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.2"
+          cpus: "0.4"
           memory: "50MB"
 
   warmup:
@@ -49,18 +49,16 @@ services:
     depends_on:
       - nginx
 
-  # db:
-  #   image: mongo:latest
-  #   hostname: db
-  #   restart: on-failure
-  #   command: --wiredTigerCacheSizeGB 0.25
-  #   ports:
-  #     - "27017:27017"
-  #   deploy:
-  #     resources:
-  #       limits:
-  #         cpus: "0.13"
-  #         memory: "100MB"
+  db:
+    image: mongo:latest
+    hostname: db
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: "100MB"
 
 networks:
   default:
