@@ -1,5 +1,5 @@
 val scala3Version = "3.3.1"
-val kyoVersion    = "0.8.7+7-e7883b05+20240228-2207-SNAPSHOT"
+val kyoVersion    = "0.8.7+7-e7883b05+20240228-2226-SNAPSHOT"
 
 ThisBuild / assemblyMergeStrategy := (_ => MergeStrategy.first)
 

@@ -6,7 +6,8 @@ import kyo.server.*
 object Server extends App:
 
     val options =
-        NettyKyoServerOptions.default()
+        NettyKyoServerOptions
+            .default(enableLogging = false)
             .forkExecution(false)
 
     val server = NettyKyoServer(options)
@@ -20,7 +21,7 @@ object Server extends App:
 
     val b = Envs[Store].run[NettyKyoServerBinding, Fibers & Envs[Ledger]](Store.init)(a)
     val c = Envs[Ledger].run(Ledger.init("/app/data/ledger.dat"))(b)
- 
+
     IOs.run(Fibers.run(c))
 
 end Server

@@ -14,7 +14,7 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: "200MB"
+          memory: "230MB"
 
   api02:
     <<: *api
@@ -35,15 +35,15 @@ services:
       resources:
         limits:
           cpus: "0.4"
-          memory: "50MB"
+          memory: "45MB"
 
-  warmup:
-    image: grafana/k6:latest
-    volumes:
-      - ./warmup.js:/opt/warmup.js
-    command: run /opt/warmup.js
-    depends_on:
-      - nginx
+  # warmup:
+  #   image: grafana/k6:latest
+  #   volumes:
+  #     - ./warmup.js:/opt/warmup.js
+  #   command: run /opt/warmup.js
+  #   depends_on:
+  #     - nginx
 
   db:
     image: mongo:latest
@@ -54,7 +54,7 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: "100MB"
+          memory: "45MB"
 
 networks:
   default:
