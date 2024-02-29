@@ -20,8 +20,8 @@ object Endpoints:
                     _.post
                         .in("clientes" / path[Int]("id") / "transacoes")
                         .errorOut(statusCode)
-                        .in(jsonBody[TransacaoRequest])
-                        .out(jsonBody[TransacaoResponse])
+                        .in(jsonBody[Transaction])
+                        .out(jsonBody[Processed])
                 )(handler.transaction)
             }
 
@@ -30,7 +30,7 @@ object Endpoints:
                     _.get
                         .in("clientes" / path[Int]("id") / "extrato")
                         .errorOut(statusCode)
-                        .out(jsonBody[ExtratoResponse])
+                        .out(jsonBody[Statement])
                 )(handler.statement)
             }
         }

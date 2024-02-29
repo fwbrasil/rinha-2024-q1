@@ -21,7 +21,6 @@ lazy val root = project
             "utf8",
             "-feature",
             "-unchecked",
-            "-deprecation",
             "-language:implicitConversions",
             "-Wvalue-discard",
             "-Wunused:all"

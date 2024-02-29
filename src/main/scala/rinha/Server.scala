@@ -5,6 +5,9 @@ import kyo.server.*
 
 object Server extends App:
 
+    val mongoUrl = "mongodb://db"
+    val ledgerPath = "/app/data/ledger.dat"
+ 
     val options =
         NettyKyoServerOptions
             .default(enableLogging = false)
@@ -19,9 +22,9 @@ object Server extends App:
             Routes.run(server)(Endpoints.init)
         }
 
-    val b = Envs[Store].run[NettyKyoServerBinding, Fibers & Envs[Ledger]](Store.init)(a)
-    val c = Envs[Ledger].run(Ledger.init("/app/data/ledger.dat"))(b)
+    val b = Envs[Store].run[NettyKyoServerBinding, Fibers & Envs[Ledger]](Store.init(mongoUrl))(a)
+    val c = Envs[Ledger].run(Ledger.init(ledgerPath))(b)
 
-    IOs.run(Fibers.run(c))
+    IOs.run(Fibers.run(Resources.run(c)))
 
 end Server
