@@ -38,14 +38,14 @@ services:
           cpus: "0.4"
           memory: "45MB"
 
-  # warmup:
-  #   image: grafana/k6:latest
-  #   volumes:
-  #     - ./warmup.js:/opt/warmup.js
-  #   command: run /opt/warmup.js
-  #   network_mode: host
-  #   depends_on:
-  #     - nginx
+  warmup:
+    image: grafana/k6:latest
+    volumes:
+      - ./warmup.js:/opt/warmup.js
+    command: run /opt/warmup.js
+    network_mode: host
+    depends_on:
+      - nginx
 
   # db:
   #   image: mongo:latest
