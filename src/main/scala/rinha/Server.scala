@@ -1,21 +1,33 @@
 package rinha
 
 import kyo.*
-import kyo.server.*
+import sttp.tapir.server.netty.*
 
 object Server extends App:
+    val mongoUrl =
+        Option(System.getenv("MONGO_URL"))
+            .getOrElse("mongodb://db")
 
-    val mongoUrl = "mongodb://db"
-    val ledgerPath = "/app/data/ledger.dat"
- 
+    val ledgerPath =
+        Option(System.getenv("LEDGER_PATH"))
+            .getOrElse("ledger.dat")
+
     val options =
         NettyKyoServerOptions
             .default(enableLogging = false)
             .forkExecution(false)
 
-    val server = NettyKyoServer(options)
-        .host("0.0.0.0")
-        .port(8080)
+    val cfg =
+        NettyConfig.default
+            .withSocketKeepAlive
+            .socketBacklog(1)
+            // .withAddLoggingHandler
+            .copy(socketTimeout = None)
+
+    val server =
+        NettyKyoServer(options, cfg)
+            .host("0.0.0.0")
+            .port(8080)
 
     val a: NettyKyoServerBinding < (Envs[Ledger] & Envs[Store] & Fibers) =
         Envs[Handler].run(Handler.init) {

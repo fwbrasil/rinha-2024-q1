@@ -24,10 +24,10 @@ object Store:
 
     def init(mongoUrl: String): Store < IOs =
         defer {
-            val col = await(connect(mongoUrl))
-            val ch  = await(Channels.init[Entry](1000))
-            await(Fibers.init(consume(ch, col)))
-            Live(ch)
+            // val col = await(connect(mongoUrl))
+            // val ch  = await(Channels.init[Entry](1000))
+            // await(Fibers.init(consume(ch, col)))
+            Live(null)
         }
 
     private class Live(ch: Channel[Entry]) extends Store:
@@ -39,7 +39,8 @@ object Store:
             amount: Int,
             desc: String
         ): Unit < Fibers =
-            ch.put(Entry(limit, balance, account, amount, desc))
+            {}
+            // ch.put(Entry(limit, balance, account, amount, desc))
 
     end Live
 

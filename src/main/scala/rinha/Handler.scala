@@ -53,7 +53,7 @@ object Handler:
                         await(unprocessableEntity)
                     case res @ Processed(balance, limit) =>
                         // async store transaction
-                        await(store.transaction(limit, balance, account, value, desc))
+                        // await(store.transaction(limit, balance, account, value, desc))
                         res
                 end match
             }

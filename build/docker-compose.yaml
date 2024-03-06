@@ -6,10 +6,12 @@ services:
     hostname: api01
     ports:
       - "8081:8080"
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     volumes:
       - data:/app/data
+    environment:
+      - LEDGER_PATH=/app/data/ledger.dat
     deploy:
       resources:
         limits:
@@ -37,24 +39,24 @@ services:
           cpus: "0.4"
           memory: "45MB"
 
-  # warmup:
-  #   image: grafana/k6:latest
-  #   volumes:
-  #     - ./warmup.js:/opt/warmup.js
-  #   command: run /opt/warmup.js
-  #   depends_on:
-  #     - nginx
+  warmup:
+    image: grafana/k6:latest
+    volumes:
+      - ./warmup.js:/opt/warmup.js
+    command: run /opt/warmup.js
+    depends_on:
+      - nginx
 
-  db:
-    image: mongo:latest
-    hostname: db
-    ports:
-      - "27017:27017"
-    deploy:
-      resources:
-        limits:
-          cpus: "0.1"
-          memory: "45MB"
+  # db:
+  #   image: mongo:latest
+  #   hostname: db
+  #   ports:
+  #     - "27017:27017"
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "0.1"
+  #         memory: "45MB"
 
 networks:
   default:

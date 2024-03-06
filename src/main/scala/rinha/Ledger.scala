@@ -34,7 +34,8 @@ object Ledger:
             await(IOs(Live(file)))
         }
 
-    private class Live(file: FileChannel) extends Ledger:
+    class Live(file: FileChannel) extends Ledger:
+        val descSize        = 10
         val entrySize       = 1024
         val transactionSize = 32
         val fileSize        = entrySize * limits.size
@@ -44,7 +45,7 @@ object Ledger:
 
         def transaction(account: Int, amount: Int, desc: String) =
             IOs {
-                val descChars = new Array[Char](10)
+                val descChars = new Array[Char](descSize)
                 for i <- 0 until desc.size do
                     descChars(i) = desc.charAt(i)
 
@@ -69,9 +70,9 @@ object Ledger:
                             Unsafe.ARRAY_CHAR_BASE_OFFSET,
                             null,
                             toffset + 12,
-                            Character.BYTES * 10
+                            Character.BYTES * descSize
                         )
-                        Processed(newBalance, limit)
+                        Processed(limit, newBalance)
                     end if
                 finally
                     unsafe.putOrderedInt(null, offset, 0)
@@ -84,7 +85,7 @@ object Ledger:
                 val offset                           = address + (account * entrySize)
                 var balance                          = 0
                 val transactions: Array[Transaction] = new Array[Transaction](10)
-                val desc                             = new Array[Char](10)
+                val desc                             = new Array[Char](descSize)
                 while !unsafe.compareAndSwapInt(null, offset, 0, 1) do {} // busy wait
                 try
                     balance = unsafe.getInt(offset + 4)
@@ -111,7 +112,7 @@ object Ledger:
                 finally
                     unsafe.putOrderedInt(null, offset, 0)
                 end try
-                Statement(Balance(balance, Instant.now(), limit), transactions.takeWhile(_ != null))
+                Statement(Balance(balance, Instant.now(), limit), transactions.takeWhile(_ != null).reverse)
             }
     end Live
 
