@@ -4,8 +4,9 @@ services:
   api01: &api
     image: fwbrasil/rinha-2024-q1:latest
     hostname: api01
-    ports:
-      - "8081:8080"
+    network_mode: host
+    # ports:
+    #   - "8081:8080"
     # depends_on:
     #   - db
     volumes:
@@ -31,8 +32,9 @@ services:
     depends_on:
       - api01
       - api02
-    ports:
-      - "9999:9999"
+    network_mode: host
+    # ports:
+    #   - "9999:9999"
     deploy:
       resources:
         limits:
@@ -44,6 +46,7 @@ services:
     volumes:
       - ./warmup.js:/opt/warmup.js
     command: run /opt/warmup.js
+    network_mode: host
     depends_on:
       - nginx
 
@@ -57,11 +60,6 @@ services:
   #       limits:
   #         cpus: "0.1"
   #         memory: "45MB"
-
-networks:
-  default:
-    driver: bridge
-    name: rinha-nginx-2024q1
 
 volumes:
   data:
