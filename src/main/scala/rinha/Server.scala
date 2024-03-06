@@ -15,7 +15,7 @@ object Server extends App:
 
     val ledgerPath =
         Option(System.getenv("LEDGER_PATH"))
-            .getOrElse("/app/data/ledger.dat")
+            .getOrElse("ledger.dat")
 
     val options =
         NettyKyoServerOptions
@@ -25,6 +25,7 @@ object Server extends App:
     val cfg =
         NettyConfig.default
             .withSocketKeepAlive
+            .copy(lingerTimeout = None)
             // .socketBacklog(1)
             // .withAddLoggingHandler
             // .copy(socketTimeout = None)
