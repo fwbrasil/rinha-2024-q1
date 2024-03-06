@@ -16,27 +16,21 @@ services:
         limits:
           cpus: "0.5"
           memory: "230MB"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/clientes/0/extrato"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api02:
     <<: *api
     environment:
       - PORT=8082
-
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-    depends_on:
-      - api01
-      - api02
-    network_mode: host
-    # ports:
-    #   - "9999:9999"
-    deploy:
-      resources:
-        limits:
-          cpus: "0.4"
-          memory: "45MB"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/clientes/0/extrato"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   warmup:
     image: grafana/k6:latest
@@ -45,7 +39,31 @@ services:
     command: run /opt/warmup.js
     network_mode: host
     depends_on:
-      - nginx
+      api01:
+        condition: service_healthy
+      api02:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      warmup:
+        condition: service_completed_successfully
+    network_mode: host
+    # ports:
+    #   - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.4"
+          memory: "45MB"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9999/clientes/0/extrato"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # db:
   #   image: mongo:latest
