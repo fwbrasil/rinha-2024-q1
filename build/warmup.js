@@ -10,8 +10,8 @@ export let options = {
 
 export default function () {
 
-    const transactionUrl = 'http://nginx:9999/clientes/0/transacoes';
-    const extratoUrl = 'http://nginx:9999/clientes/0/extrato';
+    const transactionUrl = 'http://localhost:9999/clientes/0/transacoes';
+    const extratoUrl = 'http://localhost:9999/clientes/0/extrato';
     const headers = { 'Content-Type': 'application/json' };
 
     // Alternating transaction type for each iteration
