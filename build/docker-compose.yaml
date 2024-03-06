@@ -3,7 +3,6 @@ version: "3.5"
 services:
   api01: &api
     image: fwbrasil/rinha-2024-q1:latest
-    hostname: api01
     network_mode: host
     # depends_on:
     #   - db
@@ -20,7 +19,6 @@ services:
 
   api02:
     <<: *api
-    hostname: api02
     environment:
       - PORT=8082
 
@@ -52,8 +50,7 @@ services:
   # db:
   #   image: mongo:latest
   #   hostname: db
-  #   ports:
-  #     - "27017:27017"
+  #   network_mode: host
   #   deploy:
   #     resources:
   #       limits:
