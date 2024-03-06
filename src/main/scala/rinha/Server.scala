@@ -4,6 +4,11 @@ import kyo.*
 import sttp.tapir.server.netty.*
 
 object Server extends App:
+
+    val port = 
+        Option(System.getenv("PORT"))
+            .getOrElse("8080").toInt
+
     val mongoUrl =
         Option(System.getenv("MONGO_URL"))
             .getOrElse("mongodb://db")
@@ -27,7 +32,7 @@ object Server extends App:
     val server =
         NettyKyoServer(options, cfg)
             .host("0.0.0.0")
-            .port(8080)
+            .port(port)
 
     val a: NettyKyoServerBinding < (Envs[Ledger] & Envs[Store] & Fibers) =
         Envs[Handler].run(Handler.init) {

@@ -5,14 +5,13 @@ services:
     image: fwbrasil/rinha-2024-q1:latest
     hostname: api01
     network_mode: host
-    # ports:
-    #   - "8081:8080"
     # depends_on:
     #   - db
     volumes:
       - data:/app/data
     environment:
       - LEDGER_PATH=/app/data/ledger.dat
+      - PORT=8081
     deploy:
       resources:
         limits:
@@ -22,8 +21,8 @@ services:
   api02:
     <<: *api
     hostname: api02
-    # ports:
-    #   - "8082:8080"
+    environment:
+      - PORT=8082
 
   nginx:
     image: nginx:latest
@@ -41,14 +40,14 @@ services:
           cpus: "0.4"
           memory: "45MB"
 
-  warmup:
-    image: grafana/k6:latest
-    volumes:
-      - ./warmup.js:/opt/warmup.js
-    command: run /opt/warmup.js
-    network_mode: host
-    depends_on:
-      - nginx
+  # warmup:
+  #   image: grafana/k6:latest
+  #   volumes:
+  #     - ./warmup.js:/opt/warmup.js
+  #   command: run /opt/warmup.js
+  #   network_mode: host
+  #   depends_on:
+  #     - nginx
 
   # db:
   #   image: mongo:latest
