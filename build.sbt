@@ -5,7 +5,6 @@ ThisBuild / assemblyMergeStrategy := (_ => MergeStrategy.first)
 
 lazy val root = project
     .in(file("."))
-    .enablePlugins(GraalVMNativeImagePlugin)
     .settings(
         name         := "rinha-2024-q1",
         version      := "0.1.0-SNAPSHOT",
