@@ -15,7 +15,7 @@ object Server extends App:
 
     val ledgerPath =
         Option(System.getenv("LEDGER_PATH"))
-            .getOrElse("ledger.dat")
+            .getOrElse("/app/data/ledger.dat")
 
     val options =
         NettyKyoServerOptions
