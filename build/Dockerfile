@@ -21,7 +21,7 @@ CMD /root/.sdkman/candidates/java/current/bin/java -cp /opt/app/rinha-2024-q1-as
   --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED \
   -XX:+UseZGC \
   -Xmx180M -Xms180M \
-  -Dio.netty.eventLoopThreads=25 \
+  -Dio.netty.eventLoopThreads=4 \
   -Dio.netty.leakDetection.level=DISABLED \
   -Dscala.reflect.classtag.cache.disable=true \
   -Dkyo.scheduler.coordinator.enable=false \
