@@ -15,7 +15,7 @@ services:
       resources:
         limits:
           cpus: "0.5"
-          memory: "240MB"
+          memory: "245MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
       interval: 5s
@@ -58,7 +58,7 @@ services:
       resources:
         limits:
           cpus: "0.4"
-          memory: "25MB"
+          memory: "15MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
       interval: 5s
