@@ -18,9 +18,9 @@ services:
           memory: "240MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
-      interval: 1s
+      interval: 5s
       timeout: 1s
-      retries: 5
+      retries: 20
 
   api02:
     <<: *api
@@ -28,9 +28,9 @@ services:
       - PORT=8082
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8082/health"]
-      interval: 1s
+      interval: 5s
       timeout: 1s
-      retries: 5
+      retries: 20
 
   warmup:
     image: grafana/k6:latest
@@ -61,9 +61,9 @@ services:
           memory: "25MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      interval: 5s
+      timeout: 1s
+      retries: 20
 
   # db:
   #   image: mongo:latest
