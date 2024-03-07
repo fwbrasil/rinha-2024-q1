@@ -21,9 +21,9 @@ CMD /root/.sdkman/candidates/java/current/bin/java -cp /opt/app/rinha-2024-q1-as
   --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED \
   -XX:+UseZGC \
   -Xmx170M -Xms170M \
-  -Dio.netty.eventLoopThreads=4 \
+  -Dio.netty.eventLoopThreads=8 \
   -Dio.netty.leakDetection.level=DISABLED \
   -Dscala.reflect.classtag.cache.disable=true \
-  -Dkyo.scheduler.coordinator.enable=false \
   -Dkyo.scheduler.coreWorkers=1 \
+  -Dkyo.scheduler.virtualizeWorkers=false \
   rinha.Server

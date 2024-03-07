@@ -19,7 +19,7 @@ object Server extends App:
 
     val options =
         NettyKyoServerOptions
-            .default(enableLogging = false)
+            .default(enableLogging = true)
             .forkExecution(false)
 
     val cfg =

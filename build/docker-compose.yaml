@@ -52,8 +52,6 @@ services:
       warmup:
         condition: service_completed_successfully
     network_mode: host
-    # ports:
-    #   - "9999:9999"
     deploy:
       resources:
         limits:
