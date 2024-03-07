@@ -33,6 +33,14 @@ object Endpoints:
                         .out(jsonBody[Statement])
                 )(handler.statement)
             }
+
+            await {
+                Routes.add(
+                    _.get
+                        .in("health")
+                        .out(stringBody)
+                )(_ => "ok")
+            }
         }
 
 end Endpoints
