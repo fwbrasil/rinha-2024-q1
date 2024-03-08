@@ -14,6 +14,8 @@ trait Handler:
         account: Int
     ): Statement < (Aborts[StatusCode] & IOs)
 
+    def clear: Unit < IOs
+
 end Handler
 
 object Handler:
@@ -69,6 +71,9 @@ object Handler:
                 // get statement
                 await(ledger.statement(account))
             }
+
+        def clear =
+            ledger.clear
     end Live
 
 end Handler

@@ -41,6 +41,14 @@ object Endpoints:
                         .out(stringBody)
                 )(_ => "ok")
             }
+
+            await {
+                Routes.add(
+                    _.get
+                        .in("clear")
+                        .out(stringBody)
+                )(_ => handler.clear.andThen("ok"))
+            }
         }
 
 end Endpoints

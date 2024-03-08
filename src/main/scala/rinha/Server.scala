@@ -19,7 +19,7 @@ object Server extends App:
 
     val options =
         NettyKyoServerOptions
-            .default(enableLogging = true)
+            .default(enableLogging = false)
             .forkExecution(false)
 
     val cfg =
@@ -41,7 +41,7 @@ object Server extends App:
         }
 
     val b = Envs[Store].run[NettyKyoServerBinding, Fibers & Envs[Ledger]](Store.init(mongoUrl))(a)
-    val c = Envs[Ledger].run(Ledger.init(ledgerPath))(b)
+    val c: NettyKyoServerBinding < (Resources & Fibers) = Envs[Ledger].run(Ledger.init(ledgerPath))(b)
 
     IOs.run(Fibers.run(Resources.run(c)))
 

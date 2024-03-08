@@ -23,6 +23,8 @@ trait Ledger:
         account: Int
     ): Statement < IOs
 
+    def clear: Unit < IOs
+
 end Ledger
 
 object Ledger:
@@ -112,7 +114,15 @@ object Ledger:
                 finally
                     unsafe.putOrderedInt(null, offset, 0)
                 end try
-                Statement(Balance(balance, Instant.now(), limit), transactions.takeWhile(_ != null).reverse)
+                Statement(
+                    Balance(balance, Instant.now(), limit),
+                    transactions.takeWhile(_ != null).reverse
+                )
+            }
+
+        def clear =
+            IOs {
+                unsafe.setMemory(address, fileSize, 0)
             }
     end Live
 
