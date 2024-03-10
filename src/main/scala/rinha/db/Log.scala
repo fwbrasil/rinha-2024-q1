@@ -60,7 +60,6 @@ object Log:
         private def append(entries: Seq[Entry]) =
             IOs {
                 if entries.nonEmpty then
-                    println("flushing " + entries.size)
                     val str =
                         entries.map { e =>
                             s"${e.balance}|${e.account}|${e.amount}|${e.desc}"
