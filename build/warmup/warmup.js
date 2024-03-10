@@ -3,8 +3,8 @@ import check from 'k6';
 
 export let options = {
     stages: [
-        { duration: '1s', target: 350 },
-        { duration: '40s', target: 350 },
+        { duration: '1s', target: 30 },
+        { duration: '5s', target: 30 },
     ]
 };
 
