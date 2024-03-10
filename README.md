@@ -12,3 +12,4 @@ https://github.com/fwbrasil/rinha-2024-q1
 - [Netty](https://netty.io/)
 - Nginx
 - Embedded DB using IPC via memory mapped files and Unsafe
+- Host network mode
