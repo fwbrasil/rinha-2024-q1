@@ -28,7 +28,6 @@ object Server extends App:
         NettyConfig.default
             .withSocketKeepAlive
             .copy(lingerTimeout = None)
-        // .withAddLoggingHandler
 
     val server =
         NettyKyoServer(options, cfg)

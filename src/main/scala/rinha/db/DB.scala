@@ -2,7 +2,7 @@ package rinha.db
 
 import kyo.*
 import rinha.*
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.*
 
 trait DB:
 
@@ -15,8 +15,6 @@ trait DB:
     def statement(
         account: Int
     ): Statement < IOs
-
-    def clear: Unit < IOs
 
 end DB
 
@@ -45,9 +43,5 @@ object DB:
         def statement(account: Int): Statement < IOs =
             index.statement(account)
 
-        def clear: Unit < IOs = defer {
-            await(index.clear)
-            await(log.clear)
-        }
     end Live
 end DB

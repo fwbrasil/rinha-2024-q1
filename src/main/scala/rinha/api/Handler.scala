@@ -16,8 +16,6 @@ trait Handler:
         account: Int
     ): Statement < (Aborts[StatusCode] & IOs)
 
-    def clear: Unit < IOs
-
 end Handler
 
 object Handler:
@@ -68,8 +66,6 @@ object Handler:
             await(db.statement(account))
         }
 
-        def clear =
-            db.clear
     end Live
 
 end Handler

@@ -24,8 +24,6 @@ trait Index:
         account: Int
     ): Statement < IOs
 
-    def clear: Unit < IOs
-
 end Index
 
 object Index:
@@ -168,10 +166,6 @@ object Index:
             )
         end decode
 
-        def clear =
-            IOs {
-                unsafe.setMemory(address, fileSize, 0)
-            }
     end Live
 
     private def open(filePath: String) =
