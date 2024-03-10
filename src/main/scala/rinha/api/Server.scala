@@ -15,7 +15,7 @@ object Server extends App:
 
     val dbConfig =
         DB.Config(
-            flag("DB_PATH", "."),
+            flag("DB_PATH", "/app/data/"),
             flag("flushInternalMs", "1000").toInt.millis
         )
 
