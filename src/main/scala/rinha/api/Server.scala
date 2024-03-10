@@ -37,8 +37,12 @@ object Server extends App:
     val db      = Envs[DB.Config].run(dbConfig)(DB.init)
     val handler = Envs[DB].run(db)(Handler.init)
     val init    = Envs[Handler].run[Unit, Routes](handler)(Endpoints.init)
-    val binding = Routes.run(server)(init)
 
-    IOs.run(Fibers.run(binding))
+    val io = defer {
+        await(Consoles.println(s"Server starting on port $port..."))
+        val binding = await(Routes.run(server)(init))
+        await(Consoles.println(s"Server started: ${binding.localSocket}"))
+    }
+    IOs.run(Fibers.run(io))
 
 end Server
