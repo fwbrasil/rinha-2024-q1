@@ -29,4 +29,4 @@ CMD java -cp /opt/app/rinha-2024-q1-assembly-0.1.0-SNAPSHOT.jar \
   -Dscala.reflect.classtag.cache.disable=true \
   -Dkyo.scheduler.coreWorkers=1 \
   -Dkyo.scheduler.virtualizeWorkers=false \
-  rinha.Server
+  rinha.api.Server
