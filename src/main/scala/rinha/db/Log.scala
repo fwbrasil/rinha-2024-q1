@@ -22,15 +22,14 @@ object Log:
 
     case class Entry(balance: Int, account: Int, amount: Int, desc: String)
 
-    val init: Log < (Envs[DB.Config] & IOs) =
-        defer {
-            val cfg  = await(Envs[DB.Config].get)
-            val q    = await(Queues.initUnbounded[Entry](Access.Mpsc))
-            val flag = await(Atomics.initBoolean(false))
-            val log  = Live(cfg.workingDir + "/log.dat", q, flag)
-            await(Fibers.init(log.flushLoop(cfg.flushInterval)))
-            log
-        }
+    val init: Log < (Envs[DB.Config] & IOs) = defer {
+        val cfg  = await(Envs[DB.Config].get)
+        val q    = await(Queues.initUnbounded[Entry](Access.Mpsc))
+        val flag = await(Atomics.initBoolean(false))
+        val log  = Live(cfg.workingDir + "/log.dat", q, flag)
+        await(Fibers.init(log.flushLoop(cfg.flushInterval)))
+        log
+    }
 
     class Live(filePath: String, q: Queues.Unbounded[Entry], clearFlag: AtomicBoolean) extends Log:
 
@@ -47,15 +46,14 @@ object Log:
         def clear =
             clearFlag.set(true)
 
-        private[Log] def flushLoop(interval: Duration): Unit < Fibers =
-            defer {
-                await(Fibers.sleep(interval))
-                if await(clearFlag.cas(true, false)) then
-                    await(clearFile)
-                val entries = await(q.drain)
-                await(append(entries))
-                await(flushLoop(interval))
-            }
+        private[Log] def flushLoop(interval: Duration): Unit < Fibers = defer {
+            await(Fibers.sleep(interval))
+            if await(clearFlag.cas(true, false)) then
+                await(clearFile)
+            val entries = await(q.drain)
+            await(append(entries))
+            await(flushLoop(interval))
+        }
 
         private def append(entries: Seq[Entry]) =
             IOs {

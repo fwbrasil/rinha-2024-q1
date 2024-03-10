@@ -30,12 +30,11 @@ end Index
 
 object Index:
 
-    val init: Index < (Envs[DB.Config] & IOs) =
-        defer {
-            val cfg  = await(Envs[DB.Config].get)
-            val file = await(open(cfg.workingDir + "index.dat"))
-            await(IOs(Live(file)))
-        }
+    val init: Index < (Envs[DB.Config] & IOs) = defer {
+        val cfg  = await(Envs[DB.Config].get)
+        val file = await(open(cfg.workingDir + "/index.dat"))
+        await(IOs(Live(file)))
+    }
 
     final class Live(file: FileChannel) extends Index:
         private val descSize           = 10

@@ -5,6 +5,7 @@ import rinha.*
 import scala.concurrent.duration.Duration
 
 trait DB:
+
     def transaction(
         account: Int,
         amount: Int,
@@ -16,6 +17,7 @@ trait DB:
     ): Statement < IOs
 
     def clear: Unit < IOs
+
 end DB
 
 object DB:
@@ -25,12 +27,11 @@ object DB:
         flushInterval: Duration
     )
 
-    val init: Live < (Envs[Config] & IOs) =
-        defer {
-            val index = await(Index.init)
-            val log   = await(Log.init)
-            Live(index, log)
-        }
+    val init: Live < (Envs[Config] & IOs) = defer {
+        val index = await(Index.init)
+        val log   = await(Log.init)
+        Live(index, log)
+    }
 
     class Live(index: Index, log: Log) extends DB:
 
@@ -44,10 +45,9 @@ object DB:
         def statement(account: Int): Statement < IOs =
             index.statement(account)
 
-        def clear: Unit < IOs =
-            defer {
-                await(index.clear)
-                await(log.clear)
-            }
+        def clear: Unit < IOs = defer {
+            await(index.clear)
+            await(log.clear)
+        }
     end Live
 end DB
