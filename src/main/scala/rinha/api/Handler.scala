@@ -1,6 +1,8 @@
-package rinha
+package rinha.api
 
 import kyo.*
+import rinha.*
+import rinha.db.DB
 import sttp.model.StatusCode
 
 trait Handler:
@@ -20,13 +22,15 @@ end Handler
 
 object Handler:
 
-    def init: Handler < (Envs[Ledger] & Envs[Store]) =
-        zip(Envs[Ledger].get, Envs[Store].get).map(Live(_, _))
+    val init: Handler < Envs[DB] =
+        defer {
+            Live(await(Envs[DB].get))
+        }
 
-    private class Live(ledger: Ledger, store: Store) extends Handler:
+    final class Live(db: DB) extends Handler:
 
-        val notFound            = Aborts(StatusCode.NotFound)
-        val unprocessableEntity = Aborts(StatusCode.UnprocessableEntity)
+        private val notFound            = Aborts(StatusCode.NotFound)
+        private val unprocessableEntity = Aborts(StatusCode.UnprocessableEntity)
 
         def transaction(account: Int, request: Transaction) =
             defer {
@@ -47,16 +51,11 @@ object Handler:
 
                 // perform transaction
                 val result =
-                    await(ledger.transaction(account, value, desc))
+                    await(db.transaction(account, value, desc))
 
                 result match
-                    case Denied =>
-                        // return failure
-                        await(unprocessableEntity)
-                    case res @ Processed(balance, limit) =>
-                        // async store transaction
-                        // await(store.transaction(limit, balance, account, value, desc))
-                        res
+                    case Denied         => await(unprocessableEntity)
+                    case res: Processed => res
                 end match
             }
 
@@ -69,11 +68,11 @@ object Handler:
                 }
 
                 // get statement
-                await(ledger.statement(account))
+                await(db.statement(account))
             }
 
         def clear =
-            ledger.clear
+            db.clear
     end Live
 
 end Handler

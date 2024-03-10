@@ -1,4 +1,4 @@
-package rinha
+package rinha.api
 
 import java.time.Instant
 import kyo.*
@@ -7,6 +7,7 @@ import sttp.tapir.*
 import sttp.tapir.generic.auto.*
 import sttp.tapir.json.zio.*
 import zio.json.JsonEncoder
+import rinha.*
 
 object Endpoints:
 
