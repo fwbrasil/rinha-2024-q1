@@ -34,7 +34,7 @@ services:
   warmup:
     image: grafana/k6:latest
     volumes:
-      - ./warmup/warmup.js:/opt/warmup.js:ro
+      - ./warmup/warmup.js:/opt/warmup.js
     command: run /opt/warmup.js
     network_mode: host
     depends_on:
