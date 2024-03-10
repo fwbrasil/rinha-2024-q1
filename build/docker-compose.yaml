@@ -43,20 +43,12 @@ services:
       api02:
         condition: service_healthy
 
-  cleanup:
-    image: fwbrasil/rinha-2024-q1-warmup:latest
-    network_mode: host
-    depends_on:
-      warmup:
-        condition: service_completed_successfully
-    command: curl -f http://localhost:9999/clear
-
   nginx:
     image: nginx:latest
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      cleanup:
+      warmup:
         condition: service_completed_successfully
     network_mode: host
     deploy:
