@@ -24,7 +24,7 @@ CMD java -cp /opt/app/rinha-2024-q1-assembly-0.1.0-SNAPSHOT.jar \
   --add-opens=java.base/jdk.internal.misc=ALL-UNNAMED \
   -XX:+UseZGC \
   -Xmx180M -Xms180M -XX:+AlwaysPreTouch \
-  -Dio.netty.eventLoopThreads=4 \
+  -Dio.netty.eventLoopThreads=2 \
   -Dio.netty.leakDetection.level=DISABLED \
   -Dscala.reflect.classtag.cache.disable=true \
   -Dkyo.scheduler.coreWorkers=1 \
