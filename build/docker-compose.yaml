@@ -9,7 +9,7 @@ services:
     volumes:
       - data:/app/data
     environment:
-      - LEDGER_PATH=/app/data/ledger.dat
+      - DB_PATH=/app/data
       - PORT=8081
     deploy:
       resources:
