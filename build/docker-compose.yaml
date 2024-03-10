@@ -2,10 +2,8 @@ version: "3.5"
 
 services:
   api01: &api
-    image: fwbrasil/rinha-2024-q1-app:latest
+    image: fwbrasil/rinha-2024-q1-app:v1
     network_mode: host
-    # depends_on:
-    #   - db
     volumes:
       - data:/app/data
     environment:
@@ -60,7 +58,7 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
       interval: 5s
       timeout: 1s
-      retries: 20
+      retries: 999
 
 volumes:
   data:
