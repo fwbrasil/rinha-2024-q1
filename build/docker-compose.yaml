@@ -13,8 +13,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.5"
-          memory: "245MB"
+          cpus: "0.6"
+          memory: "270MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
       interval: 5s
@@ -44,7 +44,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.4"
+          cpus: "0.3"
           memory: "15MB"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9999/health"]
