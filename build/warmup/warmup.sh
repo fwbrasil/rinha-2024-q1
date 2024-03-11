@@ -32,10 +32,10 @@ while [ $(($SECONDS - $start)) -lt 10 ]; do
         payload="{\"valor\": 1, \"tipo\": \"$transactionType\", \"descricao\": \"warmup\"}"
 
         # Execute curl commands in parallel & silently
-        curl -s -X POST -H "$contentType" -d "$payload" "$transactionUrl1" --max-time 1 &
-        curl -s -X POST -H "$contentType" -d "$payload" "$transactionUrl2" --max-time 1 &
-        curl -s -X GET "$extratoUrl1" --max-time 1 &
-        curl -s -X GET "$extratoUrl2" --max-time 1 &
+        curl -s -X POST -H "$contentType" -d "$payload" "$transactionUrl1" --max-time 1 > /dev/null 2>&1 &
+        curl -s -X POST -H "$contentType" -d "$payload" "$transactionUrl2" --max-time 1 > /dev/null 2>&1 &
+        curl -s -X GET "$extratoUrl1" --max-time 1 > /dev/null 2>&1 &
+        curl -s -X GET "$extratoUrl2" --max-time 1 > /dev/null 2>&1 &
 
         if [ $(($counter % 100)) -eq 0 ]; then
             echo "Executed $counter requests..."
