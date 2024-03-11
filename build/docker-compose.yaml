@@ -30,7 +30,7 @@ services:
       retries: 999
 
   warmup:
-    image: grafana/k6:latest
+    image: loadimpact/k6:latest
     volumes:
       - ./warmup/warmup.js:/opt/warmup.js
     command: run /opt/warmup.js
