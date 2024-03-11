@@ -34,6 +34,11 @@ services:
     volumes:
       - ./warmup/warmup.js:/opt/warmup.js
     command: run /opt/warmup.js
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "10MB"
     network_mode: host
     depends_on:
       api01:
